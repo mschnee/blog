@@ -23,9 +23,9 @@ const webpackConfig = {
     ],
     module: {
         loaders: [
-            { test: /\.tsx?$/, loader: 'ts-loader', exclude: [/webpack\.\w*\.ts$/] },
+            { test: /\.tsx?$/, loader: 'ts-loader'},
             { test: /\.html$/, loader: 'file' },
-            {test: /\.scss$/, loaders: ['style', 'css', 'sass']}
+            { test: /\.scss$/, loaders: ['style', 'css', 'sass']}
         ]
     },
     resolve: {
