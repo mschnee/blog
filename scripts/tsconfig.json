@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "types": [
+            "node"
+        ]
+    },
+    "exclude": [
+        "node_modules",
+        "../node_modules",
+        "../server",
+        "../client"
+    ]
+}
