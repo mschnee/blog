@@ -5,3 +5,5 @@ ReactDOM.render(
     React.createElement('div', {}, ['test']),
     document.querySelector('#app') as HTMLDivElement,
 );
+
+console.log('starting up');

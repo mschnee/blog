@@ -1,22 +1,21 @@
-import { Configuration, optimize } from 'webpack';
+import * as webpack from 'webpack';
 import * as path from 'path';
 
-const webpackConfig: Configuration = {
+const webpackConfig = {
     devtool: 'hidden-source-map',
-    context: path.join(__dirname, './client'),
+    context: path.join(__dirname),
     entry: {
         app: './app.ts',
         vendor: ['react', 'react-dom']
     },
     output: {
-        path: './dist',
-        filename: 'app.js'
+        path: path.join(__dirname, './dist')
     },
     plugins: [
-        new optimize.CommonsChunkPlugin({
+        new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             filename: 'vendor.js'
-        })
+        }),
     ],
     module: {
         loaders: [
@@ -27,6 +26,6 @@ const webpackConfig: Configuration = {
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx']
     }
-}
+};
 
 export default webpackConfig;
