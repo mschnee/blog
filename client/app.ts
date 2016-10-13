@@ -3,7 +3,5 @@ import * as ReactDOM from 'react-dom';
 
 ReactDOM.render(
     React.createElement('div', {}, ['test']),
-    document.querySelector('#app') as HTMLDivElement,
+    document.getElementById('app')
 );
-
-console.log('starting up');

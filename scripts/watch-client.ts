@@ -4,7 +4,7 @@ import * as path from 'path';
 import { buildCompiler } from './build-client';
 
 async function watchWebpack() {
-    return new Promise((reject, resolve) =>{
+    return new Promise((resolve, reject) =>{
         const compiler = buildCompiler();
 
         compiler.watch({

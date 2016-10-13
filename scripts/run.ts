@@ -29,7 +29,7 @@ function run(fn: any, options?: any) {
 if ((process as any)['mainModule']['children'].length === 0 && process.argv.length > 2) {
     delete require.cache[__filename]; // eslint-disable-line no-underscore-dangle
     const module: any = require(`./${process.argv[2]}`).default;
-    run(module).catch((err: Error) => console.error(err.stack));
+    run(module).catch((err: Error) => console.error(err));
 }
 
 export default run;
