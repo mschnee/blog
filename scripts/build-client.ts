@@ -26,7 +26,7 @@ export async function buildWebpack() {
             const jsonStats = stats.toJson('minimal');
             
             if (stats.hasErrors()) {
-                console.error("Webpack errors", err);
+                console.error("Webpack errors", jsonStats.errors);
                 reject(jsonStats.errors);
             }
 

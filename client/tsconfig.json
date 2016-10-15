@@ -1,10 +1,14 @@
 {
     "compilerOptions": {
-        "types": ["node"]
+        "types": ["node"],
+        "allowJs": true,
+        "jsx": "react",
+        "moduleResolution": "node",
+        "typeRoots": [
+            "../node_modules/@types"
+        ]
     },
     "exclude": [
-        "node_modules",
-        "../node_modules",
         "../server",
         "../scripts"
     ]

@@ -1,5 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { App } from './Components';
+import * as injectTapEventPlugin from 'react-tap-event-plugin';
+
+injectTapEventPlugin();
 
 declare var require: {
     <T>(path: string): T;
@@ -10,6 +14,6 @@ declare var require: {
 require('!style!css!sass!./app.scss');
 
 ReactDOM.render(
-    React.createElement('div', {}, ['test']),
+    React.createElement(App, {}, ['test']),
     document.getElementById('app')
 );
