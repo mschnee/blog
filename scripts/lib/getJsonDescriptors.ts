@@ -19,7 +19,6 @@ function promiseLoadProto(protofileName: string) {
                 console.error('Error building', protofileName, err);
                 reject(err);
             } else {
-                console.log('built from', protofileName);
                 resolve(builder);
             }
         }, builder);
@@ -40,7 +39,6 @@ let builder = newBuilder();
 
 export default function getJsonDescriptors() {
     return promiseGlob('./protos/**/*.proto').then(globHandler).then(() =>{
-        console.log('builder should be finished');
         let ret = toJson(builder);
         return JSON.parse(ret);
     });

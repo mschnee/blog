@@ -30,5 +30,7 @@ export default function buildTypes(json: any) {
             }
         });
         writeStream.end('\n');
+        
+        resolve(json);
     });
 }

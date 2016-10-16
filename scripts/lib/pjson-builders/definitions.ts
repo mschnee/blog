@@ -9,6 +9,7 @@ export interface PbMessage {
     name: string;
     fields: PbField[];
     messages?: PbMessage[];
+    services?: PbService[];
 }
 
 export interface PbServiceMethod {
