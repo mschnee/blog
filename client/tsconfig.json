@@ -6,7 +6,8 @@
         "moduleResolution": "node",
         "typeRoots": [
             "../node_modules/@types"
-        ]
+        ],
+        "sourceMap": true
     },
     "exclude": [
         "../server",
