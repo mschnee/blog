@@ -1,16 +1,18 @@
 import * as React from 'react';
 
-import { AppBar } from 'material-ui';
-import { MuiThemeProvider } from 'material-ui/styles';
+require('!style!css!sass!./App.scss');
 
-interface AppProps extends React.Props<any> {
+interface AppProps extends React.Props<App> {
 
 }
 
-export const App: React.StatelessComponent<AppProps> = (props: AppProps) => (
-    <MuiThemeProvider>
-        <AppBar 
-            title='test'
-        />
-    </MuiThemeProvider>
-);
+interface AppState {
+
+}
+
+export class App extends React.Component<AppProps, AppState> {
+    render() {
+        return <div>retest</div>;
+    }
+}
+

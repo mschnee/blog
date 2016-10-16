@@ -14,6 +14,6 @@ declare var require: {
 require('!style!css!sass!./app.scss');
 
 ReactDOM.render(
-    App({}),
+    React.createElement(App, {}),
     document.getElementById('app')
 );

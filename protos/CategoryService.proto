@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package Categories;
+
+message Category {
+    required string categoryId = 1; // a guid of the post.
+    required string name = 2;
+}
+
+message CategoryResponse {
+    repeated Category categories = 1;
+}
+
+message PostCategoryRequest {
+    required string name = 1;
+}
+
+message GetBlankRequest {};
+
+service CategoryService {
+    rpc Get (GetBlankRequest) returns (CategoryResponse);
+    rpc Post (PostCategoryRequest) returns (GetBlankRequest);
+}

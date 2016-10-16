@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package Services;
+
+message Post {
+    required string postId = 1; // a guid of the post.
+    required string title = 2;
+    required string userId = 3;
+}
+
+message SinglePostResponse {
+    required Post post = 1;
+}
+
+message MultiPostResponse {
+    repeated Post posts = 1;
+}
+
+message GetBlankRequest {};
+
+message GetByIdRequest {
+    optional string postId = 1;
+};
+
+service BlogService {
+    rpc Get (GetByIdRequest) returns (MultiPostResponse);
+}
