@@ -44,7 +44,7 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, fie
     });
 
     serviceStream.write(`import { ServiceClient } from '../../client/Utils/lib/ServiceClient';\n\n`);
-    
+
     const typeImports: string[] = [];
     const serviceMethods: string[] = [];
 

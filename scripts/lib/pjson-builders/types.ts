@@ -21,7 +21,7 @@ export default function buildTypes(json: any) {
                     writeStream.write(`    export interface ${message.name} {\n`);
                     if (message.fields && message.fields.length) {
                         message.fields.forEach(field =>{
-                            writeStream.write(`        ${field.name}${field.rule === 'optional'? '?:':':'} ${field.type};\n`);
+                            writeStream.write(`        ${field.name}${field.rule === 'optional'? '?:':':'} ${field.type}${field.rule === 'repeated' ? '[]' : ''};\n`);
                         });
                     }
                     writeStream.write(`    } // export interface ${message.name}\n\n`);
