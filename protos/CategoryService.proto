@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package Categories;
+package Category;
 
 message Category {
     required string categoryId = 1; // a guid of the post.

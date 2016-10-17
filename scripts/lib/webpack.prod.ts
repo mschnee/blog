@@ -7,7 +7,7 @@ const webpackConfig = {
     context: path.join(process.cwd(), 'client'),
     entry: {
         app: './app.ts',
-        vendor: ['react', 'react-dom', 'redux', 'immutable']
+        vendor: ['react', 'react-dom', 'redux', 'immutable', 'react-router']
     },
     output: {
         path: path.join(process.cwd(), 'dist')

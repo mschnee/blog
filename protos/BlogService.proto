@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package Services;
+package Blog;
 
 message Post {
     required string postId = 1; // a guid of the post.
