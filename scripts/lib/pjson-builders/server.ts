@@ -22,10 +22,10 @@ function buildInterfaceDefinition(usefulServiceName: string, methodName: string,
     const camelcaseName = lcName.substring(0,1) + methodName.substring(1);
 
     if (lcName.substr(0, 4) === 'post') {
-        return `    ${camelcaseName}(request: Request, response: Response, body: ${method.request});\n`;
+        return `    ${camelcaseName}(request: Request, response: Response, body: ${method.request}): void;\n`;
     } else {
         const methodParams = fields.map(field => `${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`).join(', ');
-        return `    ${camelcaseName}(request: Request, response: Response${methodParams ? ', ' + methodParams : ''});\n`;
+        return `    ${camelcaseName}(request: Request, response: Response${methodParams ? ', ' + methodParams : ''}): void;\n`;
     }
 }
 
