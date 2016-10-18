@@ -8,51 +8,73 @@ const SERVER_DIR = 'services';
 function buildServiceMethod(usefulServiceName: string, methodName: string, method: PbServiceMethod, fields: PbField[]): string {
     const lcName = methodName.toLowerCase();
     const camelcaseName = lcName.substring(0,1) + methodName.substring(1);
+
     if (lcName.substr(0, 4) === 'post') {
-        return [
-            `    @Post('/${usefulServiceName}/${camelcaseName}')`,
-            `    ${camelcaseName}(@Body() request: ${method.request}) {`,
-            `       return this.handler.${camelcaseName}(request)`,
-            '    }\n'
-        ].join('\n');
+        return `    public ${camelcaseName}(request: Request, response: Response, body: ${method.request}) {}\n`;
     } else {
-        const type = camelcaseName.split(/(?=[A-Z])/);
-        const methodParams = fields.map(field => `@Param('${field.name}') ${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`).join(', ');
-        const apiParams = fields.map(field => `/:\`\${${field.name}}\``).join('');
-        return [
-            `    @${type}(/${usefulServiceName}/${camelcaseName}${apiParams}')`,
-            `    ${camelcaseName}(${methodParams}) {`,
-            `        return this.client.${type[0]}<${method.response}>('${usefulServiceName}/${camelcaseName}${apiParams}');`,
-            '    }\n'
-        ].join('\n');
+        const methodParams = fields.map(field => `${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`).join(', ');
+        return `    public ${camelcaseName}(request: Request, response: Response${methodParams ? ', ' + methodParams : ''}) {}\n`;
     }
 }
 
-function writeServiceClass(usefulServiceName: string, namespaceName: string, fields: PbField[], service: PbService) {
+function buildExpressDefinition(usefulServiceName: string, methodName: string, method: PbServiceMethod, fields: PbField[]): string {
+    const lcName = methodName.toLowerCase();
+    const camelcaseName = lcName.substring(0,1) + methodName.substring(1);
+ 
+    if (lcName.substr(0, 4) === 'post') {
+        return `        this.app.post('/${usefulServiceName}/${camelcaseName}', (request, response) => this.${camelcaseName}(request, response, JSON.parse(request.body)));\n`;
+    } else {
+        const type = camelcaseName.split(/(?=[A-Z])/);
+        const methodParams = fields.map(field => `request.params.${field.name}`).join(', ');
+        const apiParams = fields.map(field => `/:${field.name}`).join('');
+        return `        this.app.${type}('/${usefulServiceName}/${camelcaseName}${apiParams}', (request, response) => this.${camelcaseName}(request, response${methodParams && ', ' + methodParams}));\n`;
+    }
+}
+
+function writeServiceClass(usefulServiceName: string, namespaceName: string, types: PbMessage[], service: PbService) {
     // service.name -- each rpc
     const serviceFunctionNames = Object.keys(service.rpc);
-    
-    const serviceStream = fs.createWriteStream(`./generated/${SERVER_DIR}/${service.name}.ts`, {
+    const serviceName = service.name.replace('Service', 'Controller');
+
+    const serviceStream = fs.createWriteStream(`./generated/${SERVER_DIR}/${serviceName}.ts`, {
         flags: 'w',
         encoding: 'utf8',
         autoClose: true
     });
 
-    serviceStream.write(`import { Controller, Param, Body, Get, Post, Put, Delete } from 'routing-controllers';\n\n`);
-
     const typeImports: string[] = [];
     const serviceMethods: string[] = [];
+    const expressDefinitions: string[] = [];
 
     serviceFunctionNames.forEach(rpcName => {
         const method = service.rpc[rpcName];
+        const requestType = types.find( (t: PbMessage) => t.name === method.request);
+        const requestFields = requestType && requestType.fields;
+
         typeImports.push(method.request);
         typeImports.push(method.response);
-        serviceMethods.push(buildServiceMethod(usefulServiceName, rpcName, method, fields));
+        serviceMethods.push(buildServiceMethod(usefulServiceName, rpcName, method, requestFields) );
+        expressDefinitions.push(buildExpressDefinition(usefulServiceName, rpcName, method, requestFields));
     });
 
+    // write imports
+    serviceStream.write(`import { Express, Request, Response } from 'express';\n`);
+    serviceStream.write(`import { Controller } from '../../server/lib/Controller';\n\n`);
     serviceStream.write(`import { ${namespaceName} } from '../types';\n\n`);
     Array.from(new Set(typeImports)).forEach(t => serviceStream.write(`import ${t} = ${namespaceName}.${t};\n`));
-    serviceStream.write(`\nexport class ${service.name} extends ServiceClient {\n`);
+
+    // define class
+    serviceStream.write(`\nexport class ${serviceName} extends Controller {\n`);
+
+    // define constructor
+    serviceStream.write(`    constructor(app: Express) {\n`);
+    serviceStream.write(`        super(app);\n`);
+
+    // fill the express things
+    expressDefinitions.forEach(m => serviceStream.write(m));
+    serviceStream.write('    }\n');
+
+    // define methods
     serviceMethods.forEach(m => serviceStream.write(m));
     serviceStream.write('}\n\n');
 }
@@ -66,7 +88,7 @@ export default function buildServer(json: any) {
         json.messages.forEach((ns: PbMessage) => {
             ns.services.forEach(service => {
                 const usefulServiceName = service.name.toLowerCase().replace('service', '');
-                writeServiceClass(usefulServiceName, ns.name, ns.fields, service);
+                writeServiceClass(usefulServiceName, ns.name, ns.messages, service);
             });
         });
 

@@ -24,16 +24,16 @@ function buildServiceMethod(usefulServiceName: string, methodName: string, metho
     } else {
         const type = camelcaseName.split(/(?=[A-Z])/);
         const methodParams = fields.map(field => `${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`).join(', ');
-        const apiParams = fields.map(field => `/\`\${${field.name}}\``).join('');
+        const apiParams = fields.map(field => `/\${${field.name}}`).join('');
         return [
             `    ${camelcaseName}(${methodParams}) {`,
-            `        return this.client.${type[0]}<${method.response}>('${usefulServiceName}/${camelcaseName}${apiParams}');`,
+            `        return this.client.${type[0]}<${method.response}>(\`${usefulServiceName}/${camelcaseName}${apiParams}\`);`,
             '    }\n'
         ].join('\n');
     }
 }
 
-function writeServiceClass(usefulServiceName: string, namespaceName: string, fields: PbField[], service: PbService) {
+function writeServiceClass(usefulServiceName: string, namespaceName: string, types: PbMessage[], service: PbService) {
     // service.name -- each rpc
     const serviceFunctionNames = Object.keys(service.rpc);
     
@@ -50,9 +50,12 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, fie
 
     serviceFunctionNames.forEach(rpcName => {
         const method = service.rpc[rpcName];
+        const requestType = types.find( (t: PbMessage) => t.name === method.request);
+        const requestFields = requestType && requestType.fields;
+
         typeImports.push(method.request);
         typeImports.push(method.response);
-        serviceMethods.push(buildServiceMethod(usefulServiceName, rpcName, method, fields));
+        serviceMethods.push(buildServiceMethod(usefulServiceName, rpcName, method, requestFields));
     });
 
     serviceStream.write(`import { ${namespaceName} } from '../types';\n\n`);
@@ -87,7 +90,7 @@ export default function buildClient(json: any) {
                 const usefulServiceName = service.name.toLowerCase().replace('service', '');
                 imports.push(`import { ${service.name} } from './${CLIENT_DIR}/${service.name}';\n`);
                 exports.push(`    export const ${usefulServiceName} = new ${service.name}();\n`);
-                writeServiceClass(usefulServiceName, ns.name, ns.fields, service);
+                writeServiceClass(usefulServiceName, ns.name, ns.messages, service);
             });
         });
 
