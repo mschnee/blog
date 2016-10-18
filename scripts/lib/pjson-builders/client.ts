@@ -18,7 +18,7 @@ function buildServiceMethod(usefulServiceName: string, methodName: string, metho
     if (lcName.substr(0, 4) === 'post') {
         return [
             `    ${camelcaseName}(request: ${method.request}) {`,
-            `        return this.client.post<${method.response}>('${usefulServiceName}/${camelcaseName}', request);`,
+            `        return this.client.post<${method.response}>('/api/${usefulServiceName}/${camelcaseName}', request);`,
             '    }\n'
         ].join('\n');
     } else {
@@ -27,7 +27,7 @@ function buildServiceMethod(usefulServiceName: string, methodName: string, metho
         const apiParams = fields.map(field => `/\${${field.name}}`).join('');
         return [
             `    ${camelcaseName}(${methodParams}) {`,
-            `        return this.client.${type[0]}<${method.response}>(\`${usefulServiceName}/${camelcaseName}${apiParams}\`);`,
+            `        return this.client.${type[0]}<${method.response}>(\`/api/${usefulServiceName}/${camelcaseName}${apiParams}\`);`,
             '    }\n'
         ].join('\n');
     }
@@ -81,15 +81,18 @@ export default function buildClient(json: any) {
         clientStream.addListener('error', reject);
 
         clientStream.write('//Automatically generated service.\n\n');
-        
+        clientStream.write('import { Client } from \'../client/Utils/lib/Client\';\n');
+
         const imports: string[] = [];
         const exports: string[] = [];
+        const initLine: string[] = [];
 
         json.messages.forEach((ns: PbMessage) => {
             ns.services.forEach(service => {
                 const usefulServiceName = service.name.toLowerCase().replace('service', '');
                 imports.push(`import { ${service.name} } from './${CLIENT_DIR}/${service.name}';\n`);
                 exports.push(`    export const ${usefulServiceName} = new ${service.name}();\n`);
+                initLine.push(`    Services.${usefulServiceName}.setClient(client);\n`);
                 writeServiceClass(usefulServiceName, ns.name, ns.messages, service);
             });
         });
@@ -100,6 +103,13 @@ export default function buildClient(json: any) {
         exports.forEach(line => clientStream.write(line));
 
         clientStream.write('} // export namespace Services \n\n');
+
+        // export a useful function
+        clientStream.write('export function setClientForAllServices(client: Client) {\n');
+        initLine.forEach(m => clientStream.write(m));
+        clientStream.write('}\n');
+
+        // end it all
         clientStream.end('\n');
 
         resolve(json);

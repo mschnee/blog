@@ -1,8 +1,13 @@
 import * as webpack from 'webpack';
 import * as path from 'path';
-let CopyWebpackPlugin  = require('copy-webpack-plugin');
 
-const webpackConfig = {
+import { Configuration } from 'webpack';
+
+//let CopyWebpackPlugin  = require('copy-webpack-plugin');
+let HtmlWebpackPlugin = require('html-webpack-plugin');
+let ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+const webpackConfig: Configuration = {
     devtool: 'hidden-source-map',
     context: path.join(process.cwd(), 'client'),
     entry: {
@@ -10,26 +15,30 @@ const webpackConfig = {
         vendor: ['react', 'react-dom', 'redux', 'immutable', 'react-router']
     },
     output: {
-        path: path.join(process.cwd(), 'dist')
+        path: path.join(process.cwd(), 'dist'),
+        filename: "assets/[name].[hash].js"
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
-            filename: 'vendor.js'
+            filename: 'assets/vendor.[hash].js'
         }),
-        new CopyWebpackPlugin([
-            { from: './index.html' }
-        ])
+        new HtmlWebpackPlugin({
+            template: path.join(process.cwd(), 'client', 'index.html'),
+            inject: 'body'
+        }),
+        new ExtractTextPlugin('[name].[chunkhash].css')
     ],
     module: {
         loaders: [
             { test: /\.tsx?$/, loader: 'ts-loader'},
-            { test: /\.html$/, loader: 'file' },
-            { test: /\.scss$/, loaders: ['style', 'css', 'sass']}
+            { test: /\.scss$/, loader: ExtractTextPlugin.extract({fallbackLoader: 'style', loader: 'css!sass'})}
+            //{ test: /\.html$/, loader: 'file' },
+            //{ test: /\.scss$/, loaders: ['style', 'css', 'sass']}
         ]
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.jsx']
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.scss']
     }
 };
 

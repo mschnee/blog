@@ -3,9 +3,12 @@ import * as path from 'path';
 
 export function buildCompiler() {
     let configFile: string;
-    if (process.env === 'production') {
+    
+    if (process.env.NODE_ENV === 'production') {
+        console.log('Using Production configuration');
         configFile = 'webpack.prod.ts';
     } else {
+        console.log('Using Dev configuration');
         configFile = 'webpack.dev.ts';
     }
     const config = require(path.resolve(process.cwd(), 'scripts', 'lib', configFile)).default;

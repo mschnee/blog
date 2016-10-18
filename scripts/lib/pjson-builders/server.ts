@@ -35,7 +35,7 @@ function buildExpressDefinition(usefulServiceName: string, methodName: string, m
  
     if (lcName.substr(0, 4) === 'post') {
         return [
-            `        this.app.post('/${usefulServiceName}/${camelcaseName}', (request, response) => {\n`,
+            `        this.app.post('/api/${usefulServiceName}/${camelcaseName}', (request, response) => {\n`,
             `            const result = this.${camelcaseName}(request, response, JSON.parse(request.body));\n`,
             `            response.json(result);\n`,
             `        });\n`
@@ -45,7 +45,7 @@ function buildExpressDefinition(usefulServiceName: string, methodName: string, m
         const methodParams = fields.map(field => `request.params.${field.name}`).join(', ');
         const apiParams = fields.map(field => `/:${field.name}`).join('');
         return [
-            `        this.app.${type}('/${usefulServiceName}/${camelcaseName}${apiParams}', (request, response) => {\n`,
+            `        this.app.${type}('/api/${usefulServiceName}/${camelcaseName}${apiParams}', (request, response) => {\n`,
             `            const result = this.${camelcaseName}(request, response${methodParams && ', ' + methodParams});\n`,
             `            response.json(result);\n`,
             `        });\n`

@@ -14,7 +14,7 @@ import fs from './lib/fs';
  * Cleans up the output (build) directory.
  */
 async function clean() {
-  await del(['.tmp', 'dist/*.js', 'dist/*.js.map', 'dist/*.html', 'generated/**/*.ts']);
+  await del(['.tmp', 'dist/**/*.js', 'dist/**/*.js.map', 'dist/**/*.html', 'generated/**/*.ts']);
   await fs.makeDir('dist');
 }
 
