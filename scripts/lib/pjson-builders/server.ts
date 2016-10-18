@@ -10,10 +10,10 @@ function buildServiceMethod(usefulServiceName: string, methodName: string, metho
     const camelcaseName = lcName.substring(0,1) + methodName.substring(1);
 
     if (lcName.substr(0, 4) === 'post') {
-        return `    public ${camelcaseName}(request: Request, response: Response, body: ${method.request}) {}\n`;
+        return `    public ${camelcaseName}(request: Request, response: Response, body: ${method.request}): ${method.response} { throw new Error('Not implemented'); }\n`;
     } else {
         const methodParams = fields.map(field => `${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`).join(', ');
-        return `    public ${camelcaseName}(request: Request, response: Response${methodParams ? ', ' + methodParams : ''}) {}\n`;
+        return `    public ${camelcaseName}(request: Request, response: Response${methodParams ? ', ' + methodParams : ''}): ${method.response} { throw new Error('Not implemented'); }\n`;
     }
 }
 
@@ -22,10 +22,10 @@ function buildInterfaceDefinition(usefulServiceName: string, methodName: string,
     const camelcaseName = lcName.substring(0,1) + methodName.substring(1);
 
     if (lcName.substr(0, 4) === 'post') {
-        return `    ${camelcaseName}(request: Request, response: Response, body: ${method.request}): void;\n`;
+        return `    ${camelcaseName}(request: Request, response: Response, body: ${method.request}): ${method.response};\n`;
     } else {
         const methodParams = fields.map(field => `${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`).join(', ');
-        return `    ${camelcaseName}(request: Request, response: Response${methodParams ? ', ' + methodParams : ''}): void;\n`;
+        return `    ${camelcaseName}(request: Request, response: Response${methodParams ? ', ' + methodParams : ''}): ${method.response};\n`;
     }
 }
 
@@ -34,12 +34,22 @@ function buildExpressDefinition(usefulServiceName: string, methodName: string, m
     const camelcaseName = lcName.substring(0,1) + methodName.substring(1);
  
     if (lcName.substr(0, 4) === 'post') {
-        return `        this.app.post('/${usefulServiceName}/${camelcaseName}', (request, response) => this.${camelcaseName}(request, response, JSON.parse(request.body)));\n`;
+        return [
+            `        this.app.post('/${usefulServiceName}/${camelcaseName}', (request, response) => {\n`,
+            `            const result = this.${camelcaseName}(request, response, JSON.parse(request.body));\n`,
+            `            response.json(result);\n`,
+            `        });\n`
+        ].join('');
     } else {
         const type = camelcaseName.split(/(?=[A-Z])/);
         const methodParams = fields.map(field => `request.params.${field.name}`).join(', ');
         const apiParams = fields.map(field => `/:${field.name}`).join('');
-        return `        this.app.${type}('/${usefulServiceName}/${camelcaseName}${apiParams}', (request, response) => this.${camelcaseName}(request, response${methodParams && ', ' + methodParams}));\n`;
+        return [
+            `        this.app.${type}('/${usefulServiceName}/${camelcaseName}${apiParams}', (request, response) => {\n`,
+            `            const result = this.${camelcaseName}(request, response${methodParams && ', ' + methodParams});\n`,
+            `            response.json(result);\n`,
+            `        });\n`
+        ].join('');
     }
 }
 

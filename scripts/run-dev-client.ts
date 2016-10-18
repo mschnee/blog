@@ -4,7 +4,7 @@
 import * as WebpackDevServer from 'webpack-dev-server';
 import { buildCompiler, buildWebpack } from './build-client';
 
-export default async function runDevClient(port: number, proxyPort: number) {
+export default async function runDevClient(port: number = 8080, proxyPort: number = 8081) {
     await buildWebpack();
     return new Promise((resolve, reject) => {
         const server = new WebpackDevServer(buildCompiler(), {
