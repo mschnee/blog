@@ -6,6 +6,7 @@ message Post {
     required string postId = 1; // a guid of the post.
     required string title = 2;
     required string userId = 3;
+    required string content = 4;
 }
 
 message SinglePostResponse {
