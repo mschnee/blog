@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Banner } from './Banner';
 
-require('!style!css!sass!./App.scss');
+require('./App.scss');
 
 interface AppProps extends React.Props<App> {
 

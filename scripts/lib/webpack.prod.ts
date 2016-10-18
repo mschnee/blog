@@ -16,18 +16,18 @@ const webpackConfig: Configuration = {
     },
     output: {
         path: path.join(process.cwd(), 'dist'),
-        filename: "assets/[name].[hash].js"
+        filename: "assets/[name].[chunkhash].js"
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
-            filename: 'assets/vendor.[hash].js'
+            filename: 'assets/vendor.[chunkhash].js'
         }),
         new HtmlWebpackPlugin({
             template: path.join(process.cwd(), 'client', 'index.html'),
             inject: 'body'
         }),
-        new ExtractTextPlugin('[name].[chunkhash].css')
+        new ExtractTextPlugin('assets/[name].[chunkhash].css')
     ],
     module: {
         loaders: [

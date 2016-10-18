@@ -11,7 +11,7 @@ declare var require: {
     ensure: (paths: string[], callback: (require: <T>(path: string) => T) => void) => void;
 };
 
-require('!style!css!sass!./app.scss');
+require('./app.scss');
 
 ReactDOM.render(
     React.createElement(App, {}),

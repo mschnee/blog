@@ -1,8 +1,23 @@
+$spread: 15px;
+$block: 30px;
+
 .Banner {
     width: 100%;
     height: 240px;
+    overflow: hidden;
+    position: relative;
+    transition: height 0.2s;
     @media(max-width: 640px) {
         height: 180px;
     }
-    background-color: red;
+    background-color: #fafafa;
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: -$block;
+        right: -$block;
+        top: -$block;
+        box-shadow: inset 0px 0px 25px $spread rgba(0, 0, 0, 0.4);
+    }
 }
