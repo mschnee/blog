@@ -17,6 +17,18 @@ function buildServiceMethod(usefulServiceName: string, methodName: string, metho
     }
 }
 
+function buildInterfaceDefinition(usefulServiceName: string, methodName: string, method: PbServiceMethod, fields: PbField[]): string {
+    const lcName = methodName.toLowerCase();
+    const camelcaseName = lcName.substring(0,1) + methodName.substring(1);
+
+    if (lcName.substr(0, 4) === 'post') {
+        return `    ${camelcaseName}(request: Request, response: Response, body: ${method.request});\n`;
+    } else {
+        const methodParams = fields.map(field => `${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`).join(', ');
+        return `    ${camelcaseName}(request: Request, response: Response${methodParams ? ', ' + methodParams : ''});\n`;
+    }
+}
+
 function buildExpressDefinition(usefulServiceName: string, methodName: string, method: PbServiceMethod, fields: PbField[]): string {
     const lcName = methodName.toLowerCase();
     const camelcaseName = lcName.substring(0,1) + methodName.substring(1);
@@ -45,6 +57,7 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, typ
     const typeImports: string[] = [];
     const serviceMethods: string[] = [];
     const expressDefinitions: string[] = [];
+    const interfaceDefinitions: string[] = [];
 
     serviceFunctionNames.forEach(rpcName => {
         const method = service.rpc[rpcName];
@@ -55,6 +68,7 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, typ
         typeImports.push(method.response);
         serviceMethods.push(buildServiceMethod(usefulServiceName, rpcName, method, requestFields) );
         expressDefinitions.push(buildExpressDefinition(usefulServiceName, rpcName, method, requestFields));
+        interfaceDefinitions.push(buildInterfaceDefinition(usefulServiceName, rpcName, method, requestFields));
     });
 
     // write imports
@@ -63,8 +77,13 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, typ
     serviceStream.write(`import { ${namespaceName} } from '../types';\n\n`);
     Array.from(new Set(typeImports)).forEach(t => serviceStream.write(`import ${t} = ${namespaceName}.${t};\n`));
 
+    // define interface
+    serviceStream.write(`\nexport interface I${serviceName} {\n`);
+    interfaceDefinitions.forEach(m => serviceStream.write(m));
+    serviceStream.write(`} // export interface I${serviceName}\n`);
+
     // define class
-    serviceStream.write(`\nexport class ${serviceName} extends Controller {\n`);
+    serviceStream.write(`\nexport class ${serviceName} extends Controller implements I${serviceName} {\n`);
 
     // define constructor
     serviceStream.write(`    constructor(app: Express) {\n`);
@@ -72,7 +91,7 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, typ
 
     // fill the express things
     expressDefinitions.forEach(m => serviceStream.write(m));
-    serviceStream.write('    }\n');
+    serviceStream.write('    }\n\n');
 
     // define methods
     serviceMethods.forEach(m => serviceStream.write(m));
