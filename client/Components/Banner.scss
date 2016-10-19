@@ -11,6 +11,9 @@ $block: 30px;
         height: 180px;
     }
     background-color: #fafafa;
+    background-image: url('../images/banner/beach.jpg');
+    background-position: center center;
+    background-size: 100%;
     &::after {
         content: '';
         position: absolute;

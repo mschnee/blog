@@ -16,7 +16,7 @@ const webpackConfig: Configuration = {
     },
     output: {
         path: path.join(process.cwd(), 'dist'),
-        filename: "assets/[name].[chunkhash].js"
+        filename: "assets/app.[chunkhash].js"
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
@@ -32,9 +32,11 @@ const webpackConfig: Configuration = {
     module: {
         loaders: [
             { test: /\.tsx?$/, loader: 'ts-loader'},
-            { test: /\.scss$/, loader: ExtractTextPlugin.extract({fallbackLoader: 'style', loader: 'css!sass'})}
             //{ test: /\.html$/, loader: 'file' },
-            //{ test: /\.scss$/, loaders: ['style', 'css', 'sass']}
+            { test: /\.scss$/, loader: ExtractTextPlugin.extract({fallbackLoader: 'style', loader: 'css!resolve-url!sass?sourceMap'})},
+            { test: /\.png$/, loader: 'file?name=assets/images/[hash].[ext]' },
+            { test: /\.jpg$/, loader: 'file?name=assets/images/[hash].[ext]' },
+            { test: /\.jpeg$/, loader: 'file?name=assets/images/[hash].[ext]' },
         ]
     },
     resolve: {

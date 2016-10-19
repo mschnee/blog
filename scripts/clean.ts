@@ -16,6 +16,9 @@ import fs from './lib/fs';
 async function clean() {
   await del([
     '.tmp',
+    'dist/**/*.png',
+    'dist/**/*.jpg',
+    'dist/**/*.jpeg',
     'dist/**/*.css',
     'dist/**/*.css.map',
     'dist/**/*.js',
