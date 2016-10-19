@@ -26,9 +26,7 @@ webpackConfig.plugins = [
 
 webpackConfig.module.loaders = [
     { test: /\.tsx?$/, loader: 'ts-loader'},
-    { test: /\.png$/, loader: 'file?name=assets/images/[hash].[ext]' },
-    { test: /\.jpg$/, loader: 'file?name=assets/images/[hash].[ext]' },
-    { test: /\.jpeg$/, loader: 'file?name=assets/images/[hash].[ext]' },
+    { test: /\.jpe?g|\.png$$/, loader: 'file?name=assets/images/[hash].[ext]' },
     { test: /\.scss$/, loaders: ['style', 'css', 'resolve-url', 'sass?sourceMap']},
 ];
 
