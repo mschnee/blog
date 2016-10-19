@@ -15,5 +15,5 @@ require('./app.scss');
 
 ReactDOM.render(
     React.createElement(App, {}),
-    document.getElementById('app')
+    document.getElementById('app-container')
 );

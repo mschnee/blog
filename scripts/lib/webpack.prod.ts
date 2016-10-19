@@ -34,7 +34,7 @@ const webpackConfig: Configuration = {
             { test: /\.tsx?$/, loader: 'ts-loader'},
             //{ test: /\.html$/, loader: 'file' },
             { test: /\.scss$/, loader: ExtractTextPlugin.extract({fallbackLoader: 'style', loader: 'css!resolve-url!sass?sourceMap'})},
-            { test: /\.jpe?g|\.png$$/, loader: 'file?name=assets/images/[hash].[ext]' },
+            { test: /\.jpe?g|\.png$$/, loader: 'file?name=assets/[path][hash].[ext]' },
         ]
     },
     resolve: {

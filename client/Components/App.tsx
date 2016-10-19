@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Banner } from './Banner';
+import { MainNavigation } from './MainNavigation';
 
 require('./App.scss');
 
@@ -14,9 +15,14 @@ interface AppState {
 
 export class App extends React.Component<AppProps, AppState> {
     render() {
-        return <div>
-            <Banner/>
-        </div>;
+        return(
+            <div>
+                <Banner/>
+                <div className='App'>
+                    <MainNavigation />
+                </div>
+            </div>
+        );
     }
 }
 
