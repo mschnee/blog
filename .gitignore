@@ -1,7 +1,4 @@
 node_modules
 npm-debug.log.*
-dist/**/*.html
-dist/**/*.css
-dist/**/*.css.map
-dist/**/*.js
-dist/**/*.js.map
+
+dist/*
