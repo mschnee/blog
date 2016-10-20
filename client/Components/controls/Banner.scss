@@ -3,17 +3,21 @@ $block: 30px;
 
 .Banner {
     width: 100%;
+    @media(max-width: 640px) {
+        height: 180px;
+    }
+
     height: 240px;
     overflow: hidden;
     position: relative;
     transition: height 0.2s;
-    @media(max-width: 640px) {
-        height: 180px;
-    }
     background-color: #fafafa;
     background-image: url('../images/banner/beach.jpg');
-    background-position: center center;
-    background-size: 100%;
+    background-position: 50% 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
     &::after {
         content: '';
         position: absolute;

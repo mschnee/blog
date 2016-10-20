@@ -1,0 +1,16 @@
+.Avatar {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    background-image: url(https://gravatar.com/avatar/5b99cbd5ed637c5c164507e4108aa62b);
+    box-shadow: inset 0 0 1px 1px rgba(255, 255, 255, 0.8), 0 0 5px 3px rgba(0,0,0, 0.5);
+    &::after {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        content: '';
+        border: 1px solid black;
+    }
+}

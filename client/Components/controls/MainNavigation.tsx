@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { InjectedRouter } from 'react-router';
-
+import { Avatar } from './Avatar';
 require('./MainNavigation.scss');
 
 interface MainNavigationProps extends React.Props<MainNavigation> {
@@ -39,8 +39,9 @@ export class MainNavigation extends React.Component<MainNavigationProps, MainNav
         });
 
         return (
-            <div className='MainNavigation' onClick={this.onClickLink}>
-                <div className='app-container'>
+            <div className='MainNavigation app-container' onClick={this.onClickLink}>
+                <div className='NavContainer'>
+                    <Avatar />
                     {items}
                 </div>
             </div>

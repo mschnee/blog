@@ -1,10 +1,21 @@
 .MainNavigation {
+    background-color: #fefefe;
     
-    .app-container {
+    .NavContainer {
+        margin-left: 80px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        position: relative;
+        .Avatar {
+            position: absolute;
+            left: -80px;
+            bottom: 0;
+            @media(max-width: 640px) {
+                position: relative;
+            }
+        }
     }
     .item {
         font-size: 18px;
@@ -18,7 +29,7 @@
 
         transition: background-color 0.2s;
         &:hover {
-            background-color: #fafafa;
+            background-color: #efefef;
         }
 
         &.selected {
