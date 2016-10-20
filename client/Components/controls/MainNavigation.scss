@@ -1,0 +1,29 @@
+.MainNavigation {
+    
+    .app-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .item {
+        font-size: 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-grow: 1;
+        height: 48px;
+        cursor: pointer;
+
+        transition: background-color 0.2s;
+        &:hover {
+            background-color: #fafafa;
+        }
+
+        &.selected {
+            border-bottom: 2px solid black;
+            cursor: normal;
+        }
+    }
+}

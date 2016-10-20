@@ -1,1 +1,10 @@
-@import "~reset-css/reset"
+@import "~reset-css/reset";
+
+body {
+    font-family: sans-serif;
+}
+
+.app-container {
+    max-width: 1024px;
+    margin: 0 auto;
+}

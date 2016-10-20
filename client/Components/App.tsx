@@ -1,7 +1,8 @@
 import * as React from 'react';
+import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
-import { Banner } from './Banner';
-import { MainNavigation } from './MainNavigation';
+import { IndexView } from './views/IndexView';
+import { AboutView } from './views/AboutView';
 
 require('./App.scss');
 
@@ -16,12 +17,12 @@ interface AppState {
 export class App extends React.Component<AppProps, AppState> {
     render() {
         return(
-            <div>
-                <Banner/>
-                <div className='App'>
-                    <MainNavigation />
-                </div>
-            </div>
+            <Router history={browserHistory}>
+                <Route path='/' component={IndexView}>
+                    <IndexRoute component={AboutView} />
+                    <Route path='/about' component={AboutView} />
+                </Route>
+            </Router>
         );
     }
 }

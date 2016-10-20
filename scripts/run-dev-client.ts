@@ -21,7 +21,8 @@ export default async function runDevClient(port: number = 8080, proxyPort: numbe
             },
             proxy: {
                 "/api/**": `http://localhost:${proxyPort}`
-            }
+            },
+            historyApiFallback: true,
         });
         server.listen(port, "localhost", function() {
             resolve();

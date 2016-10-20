@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { App } from './Components';
+import { App } from './Components/App';
 import * as injectTapEventPlugin from 'react-tap-event-plugin';
 
 injectTapEventPlugin();
