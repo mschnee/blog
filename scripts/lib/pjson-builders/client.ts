@@ -2,15 +2,7 @@ import * as fs from 'fs';
 
 import { PbField, PbMessage, PbServiceMethod, PbService } from './definitions';
 
-function findType(json: any, service: string, typeName: string) {
-
-}
-
 const CLIENT_DIR = 'clientServices';
-
-function buildMethodString(field: PbField) {
-    return `${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`;
-}
 
 function buildServiceMethod(usefulServiceName: string, methodName: string, method: PbServiceMethod, fields: PbField[]): string {
     const lcName = methodName.toLowerCase();
@@ -23,11 +15,12 @@ function buildServiceMethod(usefulServiceName: string, methodName: string, metho
         ].join('\n');
     } else {
         const type = camelcaseName.split(/(?=[A-Z])/);
-        const methodParams = fields.map(field => `${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`).join(', ');
-        const apiParams = fields.map(field => `/\${${field.name}}`).join('');
+        //const methodParams = fields.map(field => `${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`).join(', ');
+        //const apiParams = fields.map(field => `/\${${field.name}}`).join('');
         return [
-            `    ${camelcaseName}(${methodParams}) {`,
-            `        return this.client.${type[0]}<${method.response}>(\`/api/${usefulServiceName}/${camelcaseName}${apiParams}\`);`,
+            `    ${camelcaseName}(request: ${method.request}) {`,
+            `        const apiParams = encodeURIComponent(JSON.stringify(request));`,
+            `        return this.client.${type[0]}<${method.response}>(\`/api/${usefulServiceName}/${camelcaseName}\${apiParams ? '?' + apiParams : ''}\`);`,
             '    }\n'
         ].join('\n');
     }

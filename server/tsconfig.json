@@ -1,13 +1,13 @@
 {
-    "target": "es6",
     "compilerOptions": {
-        "types": ["node"]
+        "target": "es6",
+        "types": ["node"],
+        "outDir": "./dist/server"
     },
     "exclude": [
         "node_modules",
         "../node_modules",
         "../scripts",
         "../client"
-    ],
-    "outDir": "./dist/server"
+    ]
 }

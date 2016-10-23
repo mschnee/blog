@@ -6,7 +6,9 @@ const testPost: Blog.Post = {
     postId: 'asdf',
     title: 'So I was thining',
     userId: '0000',
-    content: 'Some kind of lorem-ipsum, right?'
+    content: 'Some kind of lorem-ipsum, right?',
+    postedOn: 0,
+    tags: ['about'],
 }
 
 export class BlogController extends GeneratedBlogController implements IBlogController {

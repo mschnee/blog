@@ -7,6 +7,9 @@ message Post {
     required string title = 2;
     required string userId = 3;
     required string content = 4;
+    required int64  postedOn = 5;
+    repeated string tags = 7;
+    optional int64 updatedOn = 8;
 }
 
 message SinglePostResponse {
@@ -23,6 +26,11 @@ message GetByIdRequest {
     optional string postId = 1;
 };
 
+message GetByTagRequest {
+    required string tag = 1;
+}
+
 service BlogService {
     rpc Get (GetByIdRequest) returns (MultiPostResponse);
+    rpc GetByTag (GetByTagRequest) returns (MultiPostResponse);
 }

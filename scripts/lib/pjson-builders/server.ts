@@ -45,7 +45,7 @@ function buildExpressDefinition(usefulServiceName: string, methodName: string, m
         const methodParams = fields.map(field => `request.params.${field.name}`).join(', ');
         const apiParams = fields.map(field => `/:${field.name}`).join('');
         return [
-            `        this.app.${type}('/api/${usefulServiceName}/${camelcaseName}${apiParams}', (request, response) => {\n`,
+            `        this.app.${type[0]}('/api/${usefulServiceName}/${camelcaseName}${apiParams}', (request, response) => {\n`,
             `            const result = this.${camelcaseName}(request, response${methodParams && ', ' + methodParams});\n`,
             `            response.json(result);\n`,
             `        });\n`
