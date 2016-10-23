@@ -6,24 +6,14 @@ import { AboutView } from './views/AboutView';
 
 require('./App.scss');
 
-interface AppProps extends React.Props<App> {
-
-}
-
-interface AppState {
-
-}
-
-export class App extends React.Component<AppProps, AppState> {
-    render() {
-        return(
-            <Router history={browserHistory}>
-                <Route path='/' component={IndexView}>
-                    <IndexRoute component={AboutView} />
-                    <Route path='/about' component={AboutView} />
-                </Route>
-            </Router>
-        );
-    }
-}
-
+export const App = () => {
+    return(
+        <Router history={browserHistory}>
+            <Route path='/' component={IndexView}>
+                <IndexRoute component={AboutView} />
+                <Route path='/about' component={AboutView} />
+                <Route path='*' component={AboutView} />
+            </Route>
+        </Router>
+    );
+};

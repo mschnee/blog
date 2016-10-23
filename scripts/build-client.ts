@@ -33,7 +33,7 @@ export async function buildWebpack() {
                 reject(jsonStats.errors);
             }
 
-            console.info('Build Webpack complete')
+            console.info('Build Webpack complete');
 
             resolve(stats);
         });

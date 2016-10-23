@@ -8,7 +8,7 @@ let HtmlWebpackPlugin = require('html-webpack-plugin');
 
 webpackConfig.devtool = 'source-map';
 webpackConfig.output = {
-    path: path.join(process.cwd(), 'dist'),
+    path: path.join(process.cwd(), 'dist', 'client'),
     filename: "assets/app.[chunkhash].js",
 };
 

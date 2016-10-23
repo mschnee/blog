@@ -1,5 +1,8 @@
-.MainNavigation {
-    background-color: #fefefe;
+#MainNavigationContainer {
+    background-color: white;
+}
+#MainNavigation {
+    background-color: white;
     
     .NavContainer {
         margin-left: 80px;
@@ -11,7 +14,7 @@
         .Avatar {
             position: absolute;
             left: -80px;
-            bottom: 0;
+            bottom: 8px;
             @media(max-width: 640px) {
                 position: relative;
             }

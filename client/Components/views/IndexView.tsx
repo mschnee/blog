@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Banner } from '../controls/Banner';
 import { MainNavigation } from '../controls/MainNavigation';
-import { AboutView } from './AboutView';
 
 export class IndexView extends React.Component<any, void>  {
     render() {
@@ -9,8 +8,10 @@ export class IndexView extends React.Component<any, void>  {
             <div>
                 <Banner/>
                 <div className='App'>
-                    <MainNavigation />
-                    <div className='AppContent'>
+                    <div id='MainNavigationContainer'>
+                        <MainNavigation />
+                    </div>
+                    <div id='AppContent'>
                         {this.props.children}
                     </div>
                 </div>

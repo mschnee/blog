@@ -24,6 +24,7 @@ export class MainNavigation extends React.Component<MainNavigationProps, MainNav
     static contextTypes: React.ValidationMap<any> = {
         router: React.PropTypes.object.isRequired
     };
+
     context: {
         router: InjectedRouter
     };
@@ -39,7 +40,7 @@ export class MainNavigation extends React.Component<MainNavigationProps, MainNav
         });
 
         return (
-            <div className='MainNavigation app-container' onClick={this.onClickLink}>
+            <div id='MainNavigation' className='app-container' onClick={this.onClickLink}>
                 <div className='NavContainer'>
                     <Avatar />
                     {items}

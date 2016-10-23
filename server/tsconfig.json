@@ -1,4 +1,5 @@
 {
+    "target": "es6",
     "compilerOptions": {
         "types": ["node"]
     },
@@ -7,5 +8,6 @@
         "../node_modules",
         "../scripts",
         "../client"
-    ]
+    ],
+    "outDir": "./dist/server"
 }

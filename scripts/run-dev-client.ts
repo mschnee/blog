@@ -12,7 +12,7 @@ export default async function runDevClient(port: number = 8080, proxyPort: numbe
         const server = new WebpackDevServer(buildCompiler(), {
             hot: true,
             //noInfo: true,
-            contentBase: './dist',
+            contentBase: './dist/client',
             publicPath: "/",
             stats: {colors: true},
             watchOptions: {

@@ -54,15 +54,19 @@
     "webpack-dev-server": "^2.1.0-beta.9"
   },
   "dependencies": {
+    "@types/minimist": "^1.1.29",
+    "@types/winston": "0.0.28",
     "express": "^4.14.0",
     "helmet": "^2.3.0",
     "immutable": "^3.8.1",
+    "minimist": "^1.2.0",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-redux": "^4.4.5",
     "react-router": "^2.8.1",
     "redux": "^3.6.0",
     "reset-css": "^2.2.0",
-    "routing-controllers": "^0.6.6"
+    "routing-controllers": "^0.6.6",
+    "winston": "^2.2.0"
   }
 }

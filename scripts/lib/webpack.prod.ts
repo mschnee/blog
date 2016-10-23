@@ -15,7 +15,7 @@ const webpackConfig: Configuration = {
         vendor: ['react', 'react-dom', 'redux', 'immutable', 'react-router']
     },
     output: {
-        path: path.join(process.cwd(), 'dist'),
+        path: path.join(process.cwd(), 'dist', 'client'),
         filename: 'assets/app.[chunkhash].js'
     },
     plugins: [
