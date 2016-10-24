@@ -7,6 +7,9 @@
         "preserveConstEnums": true,
         "types": [
             "node"
+        ],
+        "lib": [
+            "es6"
         ]
     },
     "exclude": [

@@ -1,6 +1,9 @@
 {
     "compilerOptions": {
-        "outDir": "./dist/server/",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "outDir": "../dist/server/",
+        "rootDirs": ["./", "../generated/services"],
         "target": "es6",
         "noImplicitAny": true,
         "removeComments": true,

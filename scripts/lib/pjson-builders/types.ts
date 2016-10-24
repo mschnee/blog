@@ -20,7 +20,7 @@ export default function buildTypes(json: any) {
         writeStream.write('// Automatically generated.  Don\'t modify it!! Have fun!\n');
         JSON.parse(json).messages.forEach((ns: PbMessage) => {
             if (ns.messages && ns.messages.length) {
-                writeStream.write(`export namespace ${ns.name} {\n`);
+                writeStream.write(`namespace ${ns.name} {\n`);
                 ns.messages.forEach((message: PbMessage) => {
                     writeStream.write(`    export interface ${message.name} {\n`);
                     if (message.fields && message.fields.length) {
