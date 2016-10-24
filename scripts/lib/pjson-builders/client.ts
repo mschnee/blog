@@ -25,7 +25,7 @@ function buildServiceMethod(usefulServiceName: string, methodName: string, metho
             result.push(`        const apiParams = encodeURIComponent(JSON.stringify({${apiParamVar}}));`)
         }
 
-        result.push(`        return this.client.${type[0]}<${method.response}>(\`/api/${usefulServiceName}/${camelcaseName}/${pathParams}${apiParamVar && apiParamVar.length ? '?${apiParams}': ''}\`);`);
+        result.push(`        return this.client.${type[0]}<${method.response}>(\`/api/${usefulServiceName}/${camelcaseName}${pathParams ? '/' + pathParams : ''}${apiParamVar && apiParamVar.length ? '?${apiParams}': ''}\`);`);
         result.push('    }\n');
         return result.join('\n');
     }
@@ -34,7 +34,7 @@ function buildServiceMethod(usefulServiceName: string, methodName: string, metho
 function writeServiceClass(usefulServiceName: string, namespaceName: string, types: PbMessage[], service: PbService) {
     // service.name -- each rpc
     const serviceFunctionNames = Object.keys(service.rpc);
-    
+
     const serviceStream = fs.createWriteStream(`./generated/${CLIENT_DIR}/${service.name}.ts`, {
         flags: 'w',
         encoding: 'utf8',
@@ -69,7 +69,7 @@ export default function buildClient(json: any) {
             fs.mkdirSync('./generated/' + CLIENT_DIR);
         }
 
-        const clientStream = fs.createWriteStream('./generated/client.ts', { 
+        const clientStream = fs.createWriteStream('./generated/client.ts', {
             flags: 'w',
             encoding: 'utf8',
             autoClose: true

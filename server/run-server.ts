@@ -1,7 +1,8 @@
 import * as express from 'express';
 import * as helmet from 'helmet';
 
-import initRoutes from './routing';
+// this is partially generated: check for tsc errors!
+import initRoutes from '../generated/services/router';
 
 const app = express();
 app.use(helmet());

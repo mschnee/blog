@@ -32,11 +32,15 @@ function buildInterfaceDefinition(usefulServiceName: string, methodName: string,
 function buildExpressDefinition(usefulServiceName: string, methodName: string, method: PbServiceMethod, fields: PbField[]): string {
     const lcName = methodName.toLowerCase();
     const camelcaseName = lcName.substring(0,1) + methodName.substring(1);
- 
+
     if (lcName.substr(0, 4) === 'post') {
         return [
             `        this.app.post('/api/${usefulServiceName}/${camelcaseName}', (request, response) => {\n`,
-            `            const result = this.${camelcaseName}(request, response, JSON.parse(request.body));\n`,
+            `            if (!this.handler || !this.handler.${camelcaseName}) {\n`,
+            `                response.status(500);\n`,
+            `                return response.end('\\'/api/${usefulServiceName}/${camelcaseName}\\' is defined but not implemented');\n`,
+            `            }\n`,
+            `            const result = this.handler.${camelcaseName}(request, response, JSON.parse(request.body));\n`,
             `            response.json(result);\n`,
             `        });\n`
         ].join('');
@@ -46,7 +50,11 @@ function buildExpressDefinition(usefulServiceName: string, methodName: string, m
         const pathParams = fields.filter(f => f.rule !== 'repeated').map(field => `/:${field.name}`).join('');
         return [
             `        this.app.${type[0]}('/api/${usefulServiceName}/${camelcaseName}${pathParams}', (request, response) => {\n`,
-            `            const result = this.${camelcaseName}(request, response${methodParams && ', ' + methodParams});\n`,
+            `            if (!this.handler || !this.handler.${camelcaseName}) {\n`,
+            `                response.status(500);\n`,
+            `                return response.end('\\'/api/${usefulServiceName}/${camelcaseName}\\' is defined but not implemented');\n`,
+            `            }\n`,
+            `            const result = this.handler.${camelcaseName}(request, response${methodParams && ', ' + methodParams});\n`,
             `            response.json(result);\n`,
             `        });\n`
         ].join('');
@@ -93,18 +101,20 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, typ
     serviceStream.write(`} // export interface I${serviceName}\n`);
 
     // define class
-    serviceStream.write(`\nexport class ${serviceName} extends Controller implements I${serviceName} {\n`);
+    serviceStream.write(`\nexport class ${serviceName} extends Controller {\n`);
 
     // define constructor
-    serviceStream.write(`    constructor(app: Express) {\n`);
+    serviceStream.write(`    private handler: I${serviceName};\n`);
+    serviceStream.write(`    constructor(app: Express, handler: I${serviceName}) {\n`);
     serviceStream.write(`        super(app);\n`);
+    serviceStream.write(`        this.handler = handler;\n`);
 
     // fill the express things
     expressDefinitions.forEach(m => serviceStream.write(m));
-    serviceStream.write('    }\n\n');
+    serviceStream.write('    }\n');
 
     // define methods
-    serviceMethods.forEach(m => serviceStream.write(m));
+    // serviceMethods.forEach(m => serviceStream.write(m));
     serviceStream.write('}\n\n');
 }
 
@@ -114,13 +124,45 @@ export default function buildServer(json: any) {
             fs.mkdirSync('./generated/' + SERVER_DIR);
         }
 
+        const routerStream = fs.createWriteStream(`./generated/${SERVER_DIR}/router.ts`, {
+            flags: 'w',
+            encoding: 'utf8',
+            autoClose: true
+        });
+        routerStream.addListener('close', resolve);
+        routerStream.addListener('error', reject);
+
+        routerStream.write('//Automatically generated service.\n\n');
+        routerStream.write('import { Express } from \'express\';\n\n');
+
+        const generatedImports: string[] = [];
+        const controllerImports: string[] = [];
+        const definitions: string[] = [];
+        const assignments: string[] = [];
+
         JSON.parse(json).messages.forEach((ns: PbMessage) => {
             ns.services.forEach(service => {
                 const usefulServiceName = service.name.toLowerCase().replace('service', '');
+                const controllerNamne = service.name.replace('Service', 'Controller');
+
                 writeServiceClass(usefulServiceName, ns.name, ns.messages, service);
+
+                generatedImports.push(`import { ${controllerNamne} as Generated${controllerNamne} } from './${controllerNamne}';`);
+                controllerImports.push(`import { ${controllerNamne} } from '../../server/Controllers';`);
+                definitions.push(`let ${usefulServiceName}Controller: Generated${controllerNamne};`);
+                assignments.push(`    ${usefulServiceName}Controller = new Generated${controllerNamne}(app, new ${controllerNamne});`);
             });
         });
-
+        routerStream.write(generatedImports.join('\n'));
+        routerStream.write('\n\n');
+        routerStream.write(controllerImports.join('\n'));
+        routerStream.write('\n\n');
+        routerStream.write(definitions.join('\n'));
+        routerStream.write('\n\n');
+        routerStream.write('export default function initRoutes(app: Express) {\n');
+        routerStream.write(assignments.join('\n'));
+        routerStream.write('\n');
+        routerStream.write('}\n\n');
         resolve(json);
     });
 }

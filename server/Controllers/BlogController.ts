@@ -1,12 +1,12 @@
 import { Request, Response } from 'express';
-import { IBlogController, BlogController as GeneratedBlogController } from '../../generated/services/BlogController';
+import { IBlogController } from '../../generated/services/BlogController';
 
 import { Blog } from '../../generated/types';
 
 import { posts } from '../data/blogPosts';
 import { tags } from '../data/tags';
 
-export class BlogController extends GeneratedBlogController implements IBlogController {
+export class BlogController implements IBlogController {
     private getFirst() {
         return {
             posts: posts.sort((l, r) => l.postedOn - r.postedOn).slice(0, 1)
@@ -23,7 +23,7 @@ export class BlogController extends GeneratedBlogController implements IBlogCont
         }
     }
 
-    public getByTag(request: Request, response: Response, tag: string): Blog.MultiPostResponse { 
+    public getByTag(request: Request, response: Response, tag: string): Blog.MultiPostResponse {
         tag = tag.toLowerCase();
         if (tags.indexOf(tag) < 0) {
             response.status(404);
@@ -54,7 +54,7 @@ export class BlogController extends GeneratedBlogController implements IBlogCont
             };
         }
         const filters = requestTags.filter(t => tags.indexOf(t) >= 0).map(String.prototype.toLowerCase);
-        
+
         // none of the filters match?
         if (!filters || !filters.length) {
             response.status(404);
