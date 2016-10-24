@@ -7,11 +7,10 @@ import generateAll from './generate-all';
 
 export default async function runDevClient(port: number = 8080, proxyPort: number = 8081) {
     await generateAll();
-    await buildWebpack();
     return new Promise((resolve, reject) => {
         const server = new WebpackDevServer(buildCompiler(), {
             hot: true,
-            //noInfo: true,
+            noInfo: true,
             contentBase: './dist/client',
             publicPath: "/",
             stats: {colors: true},

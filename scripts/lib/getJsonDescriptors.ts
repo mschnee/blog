@@ -39,7 +39,6 @@ let builder = newBuilder();
 
 export default function getJsonDescriptors() {
     return promiseGlob('./protos/**/*.proto').then(globHandler).then(() =>{
-        let ret = toJson(builder);
-        return JSON.parse(ret);
+        return toJson(builder);
     });
 }

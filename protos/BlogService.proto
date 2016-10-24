@@ -30,7 +30,12 @@ message GetByTagRequest {
     required string tag = 1;
 }
 
+message GetByTagsRequest {
+    repeated string tags = 1;
+}
+
 service BlogService {
     rpc Get (GetByIdRequest) returns (MultiPostResponse);
     rpc GetByTag (GetByTagRequest) returns (MultiPostResponse);
+    rpc GetByTags (GetByTagsRequest) returns (MultiPostResponse);
 }

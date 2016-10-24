@@ -23,3 +23,19 @@ export interface PbService {
     options: any;
     rpc: { [methodName: string]: PbServiceMethod};
 }
+
+export function toType(type: string) {
+    if (/(double|float)/.test(type)) {
+        return 'number';
+    } else if (/[su]?(int|fixed)(32|64)/.test(type)) {
+        return 'number';
+    }
+
+    return type;
+}
+
+export function toTsDeclaration(field: PbField): string {
+    let tsType = toType(field.type);
+
+    return field.name + (field.rule === 'optional' ? '?: ' : ': ') + tsType + (field.rule === 'repeated' ? '[]' : '');
+}

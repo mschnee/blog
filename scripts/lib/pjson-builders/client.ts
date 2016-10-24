@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import { PbField, PbMessage, PbServiceMethod, PbService } from './definitions';
+import { PbField, PbMessage, PbServiceMethod, PbService, toTsDeclaration } from './definitions';
 
 const CLIENT_DIR = 'clientServices';
 
@@ -15,14 +15,19 @@ function buildServiceMethod(usefulServiceName: string, methodName: string, metho
         ].join('\n');
     } else {
         const type = camelcaseName.split(/(?=[A-Z])/);
-        //const methodParams = fields.map(field => `${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`).join(', ');
-        //const apiParams = fields.map(field => `/\${${field.name}}`).join('');
-        return [
-            `    ${camelcaseName}(request: ${method.request}) {`,
-            `        const apiParams = encodeURIComponent(JSON.stringify(request));`,
-            `        return this.client.${type[0]}<${method.response}>(\`/api/${usefulServiceName}/${camelcaseName}\${apiParams ? '?' + apiParams : ''}\`);`,
-            '    }\n'
-        ].join('\n');
+        const methodParams = fields.map(toTsDeclaration).join(', ');
+        const pathParams = fields.filter(f => f.rule !== 'repeated').map(f => '${' + f.name + '}').join('/');
+        const apiParamVar = fields.filter(f => f.rule === 'repeated').map(f => f.name).join(', ');
+        const result = [
+            `    ${camelcaseName}(${methodParams}) {`,
+        ];
+        if (apiParamVar && apiParamVar.length) {
+            result.push(`        const apiParams = encodeURIComponent(JSON.stringify({${apiParamVar}}));`)
+        }
+
+        result.push(`        return this.client.${type[0]}<${method.response}>(\`/api/${usefulServiceName}/${camelcaseName}/${pathParams}${apiParamVar && apiParamVar.length ? '?${apiParams}': ''}\`);`);
+        result.push('    }\n');
+        return result.join('\n');
     }
 }
 
@@ -80,7 +85,7 @@ export default function buildClient(json: any) {
         const exports: string[] = [];
         const initLine: string[] = [];
 
-        json.messages.forEach((ns: PbMessage) => {
+        JSON.parse(json).messages.forEach((ns: PbMessage) => {
             ns.services.forEach(service => {
                 const usefulServiceName = service.name.toLowerCase().replace('service', '');
                 imports.push(`import { ${service.name} } from './${CLIENT_DIR}/${service.name}';\n`);
@@ -108,9 +113,3 @@ export default function buildClient(json: any) {
         resolve(json);
     });
 }
-
-/**
- 
-services.blog.get().then()
-services.category.post({name: 'new category'}).then()
- */

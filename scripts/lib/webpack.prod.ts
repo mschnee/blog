@@ -12,7 +12,7 @@ const webpackConfig: Configuration = {
     context: path.join(process.cwd(), 'client'),
     entry: {
         app: './app.ts',
-        vendor: ['react', 'react-dom', 'redux', 'immutable', 'react-router']
+        vendor: ['react', 'react-dom', 'redux', 'immutable', 'react-router', 'protobufjs/dist/protobuf-light']
     },
     output: {
         path: path.join(process.cwd(), 'dist', 'client'),
@@ -35,6 +35,7 @@ const webpackConfig: Configuration = {
             //{ test: /\.html$/, loader: 'file' },
             { test: /\.scss$/, loader: ExtractTextPlugin.extract({fallbackLoader: 'style', loader: 'css!resolve-url!sass?sourceMap'})},
             { test: /\.jpe?g|\.png$$/, loader: 'file?name=assets/[path][hash].[ext]' },
+            { test: /\.proto$/, loader: 'proto-loader' }
         ]
     },
     resolve: {

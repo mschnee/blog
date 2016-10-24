@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import { PbField, PbMessage, PbServiceMethod, PbService } from './definitions';
+import { PbField, PbMessage, PbServiceMethod, PbService, toTsDeclaration } from './definitions';
 
 const SERVER_DIR = 'services';
 
@@ -12,7 +12,7 @@ function buildServiceMethod(usefulServiceName: string, methodName: string, metho
     if (lcName.substr(0, 4) === 'post') {
         return `    public ${camelcaseName}(request: Request, response: Response, body: ${method.request}): ${method.response} { throw new Error('Not implemented'); }\n`;
     } else {
-        const methodParams = fields.map(field => `${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`).join(', ');
+        const methodParams = fields.map(toTsDeclaration).join(', ');
         return `    public ${camelcaseName}(request: Request, response: Response${methodParams ? ', ' + methodParams : ''}): ${method.response} { throw new Error('Not implemented'); }\n`;
     }
 }
@@ -24,7 +24,7 @@ function buildInterfaceDefinition(usefulServiceName: string, methodName: string,
     if (lcName.substr(0, 4) === 'post') {
         return `    ${camelcaseName}(request: Request, response: Response, body: ${method.request}): ${method.response};\n`;
     } else {
-        const methodParams = fields.map(field => `${field.name}${field.rule === 'optional' ? '?:' : ':'} ${field.type}`).join(', ');
+        const methodParams = fields.map(toTsDeclaration).join(', ');
         return `    ${camelcaseName}(request: Request, response: Response${methodParams ? ', ' + methodParams : ''}): ${method.response};\n`;
     }
 }
@@ -43,9 +43,9 @@ function buildExpressDefinition(usefulServiceName: string, methodName: string, m
     } else {
         const type = camelcaseName.split(/(?=[A-Z])/);
         const methodParams = fields.map(field => `request.params.${field.name}`).join(', ');
-        const apiParams = fields.map(field => `/:${field.name}`).join('');
+        const pathParams = fields.filter(f => f.rule !== 'repeated').map(field => `/:${field.name}`).join('');
         return [
-            `        this.app.${type[0]}('/api/${usefulServiceName}/${camelcaseName}${apiParams}', (request, response) => {\n`,
+            `        this.app.${type[0]}('/api/${usefulServiceName}/${camelcaseName}${pathParams}', (request, response) => {\n`,
             `            const result = this.${camelcaseName}(request, response${methodParams && ', ' + methodParams});\n`,
             `            response.json(result);\n`,
             `        });\n`
@@ -114,7 +114,7 @@ export default function buildServer(json: any) {
             fs.mkdirSync('./generated/' + SERVER_DIR);
         }
 
-        json.messages.forEach((ns: PbMessage) => {
+        JSON.parse(json).messages.forEach((ns: PbMessage) => {
             ns.services.forEach(service => {
                 const usefulServiceName = service.name.toLowerCase().replace('service', '');
                 writeServiceClass(usefulServiceName, ns.name, ns.messages, service);

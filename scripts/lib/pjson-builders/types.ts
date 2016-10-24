@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 
-import { PbField, PbMessage, PbServiceMethod, PbService } from './definitions';
+import { PbField, PbMessage, PbServiceMethod, PbService, toTsDeclaration } from './definitions';
 
 export default function buildTypes(json: any) {
     return new Promise((resolve, reject)=>{
@@ -14,14 +14,14 @@ export default function buildTypes(json: any) {
         writeStream.addListener('error', reject);
 
         writeStream.write('// Automatically generated.  Don\'t modify it!! Have fun!\n');
-        json.messages.forEach((ns: PbMessage) => {
+        JSON.parse(json).messages.forEach((ns: PbMessage) => {
             if (ns.messages && ns.messages.length) {
                 writeStream.write(`export namespace ${ns.name} {\n`);
                 ns.messages.forEach((message: PbMessage) => {
                     writeStream.write(`    export interface ${message.name} {\n`);
                     if (message.fields && message.fields.length) {
                         message.fields.forEach(field =>{
-                            writeStream.write(`        ${field.name}${field.rule === 'optional'? '?:':':'} ${field.type}${field.rule === 'repeated' ? '[]' : ''};\n`);
+                            writeStream.write(`        ${toTsDeclaration(field)};\n`);
                         });
                     }
                     writeStream.write(`    } // export interface ${message.name}\n\n`);
@@ -30,7 +30,7 @@ export default function buildTypes(json: any) {
             }
         });
         writeStream.end('\n');
-        
+
         resolve(json);
     });
 }

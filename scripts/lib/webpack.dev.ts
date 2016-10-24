@@ -28,6 +28,7 @@ webpackConfig.module.loaders = [
     { test: /\.tsx?$/, loader: 'ts-loader'},
     { test: /\.jpe?g|\.png$$/, loader: 'file?name=assets/[path][hash].[ext]' },
     { test: /\.scss$/, loaders: ['style', 'css', 'resolve-url', 'sass?sourceMap']},
+    { test: /\.proto$/, loader: 'proto-loader' }
 ];
 
 export default webpackConfig;

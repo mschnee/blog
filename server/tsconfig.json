@@ -1,12 +1,11 @@
 {
     "compilerOptions": {
         "target": "es6",
-        "types": ["node"],
+        "types": ["node", "express"],
         "outDir": "./dist/server"
     },
     "exclude": [
         "node_modules",
-        "../node_modules",
         "../scripts",
         "../client"
     ]
