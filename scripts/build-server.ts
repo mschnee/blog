@@ -5,14 +5,33 @@ import * as path from 'path';
 
 import generateAll from './generate-all';
 
-const tsconfig = require('../server/tsconfig.json').compilerOptions;
+//const tsConfig = require('../server/tsconfig.json').compilerOptions;
 
-tsconfig.rootDirs = [
-    path.resolve(process.cwd(), 'server'),
-    path.resolve(process.cwd(), 'generated')
-];
+// tsconfig.rootDirs = [
+//     path.resolve(process.cwd(), 'server'),
+//     path.resolve(process.cwd(), 'generated')
+// ];
 
-tsconfig.outDir = path.resolve(process.cwd(), 'dist', 'server');
+// tsconfig.outDir = path.resolve(process.cwd(), 'dist', 'server');
+// const tsConfig: ts.CompilerOptions = {
+//     outDir: '../dist/server',
+//     module: ts.ModuleKind.CommonJS,
+//     target: ts.ScriptTarget.ES6,
+//     //allowSyntheticDefaultImports: true,
+//     moduleResolution: ts.ModuleResolutionKind.NodeJs,
+//     noImplicitAny: true,
+//     noEmitOnError: true,
+// }
+
+const tsConfig: any = {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "../dist/server/",
+    "target": "es6",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true
+};
 
 function testOutputDirectory() {
     if (!fs.existsSync('./dist')) {
@@ -25,29 +44,39 @@ function testOutputDirectory() {
 }
 export default async function buildServer() {
     return new Promise((resolve, reject) => {
-        compile(tsconfig, resolve, reject);
+        compile(tsConfig, resolve, reject);
     });
 }
 
 export async function watchServer() {
-    return new Promise((resolve, reject) => {
-        tsconfig.watch = true;
-        compile(tsconfig, resolve, reject);
-    });
+
 }
 
-async function compile(config: any, resolve: (value?: any) => void, reject: (value?: any) => void) {
-    await generateAll();
-    testOutputDirectory();
+async function compile(config: ts.CompilerOptions, resolve: (value?: any) => void, reject: (value?: any) => void) {
+    try {
+        await generateAll();
+        testOutputDirectory();
 
-    const files = glob.sync('./server/**/*.ts');
-    console.log(config);
-    let program = ts.createProgram(files, tsconfig);
-    let emitResult = program.emit();
+        const files = glob.sync('./server/**/*.ts');
 
-    if (emitResult.emitSkipped) {
-        return reject(emitResult.diagnostics.map(d => d.messageText).join('\n'));
-    } else {
-        return resolve(emitResult);
+        let program = ts.createProgram(files, tsConfig);
+        let emitResult = program.emit();
+        let allDiagnostics = ts.getPreEmitDiagnostics(program).concat(emitResult.diagnostics);
+
+
+        allDiagnostics.forEach(diagnostic => {
+            let { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
+            let message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
+            console.log(`TS${diagnostic.code} - ${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`);
+        });
+
+        if (emitResult.emitSkipped) {
+            return reject('Build failed');
+        } else {
+            return resolve(emitResult);
+        }
+    } catch (e) {
+        reject(e);
     }
+
 }

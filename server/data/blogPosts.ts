@@ -1,4 +1,4 @@
-import { Blog } from '../../generated/types';
+import { Blog } from '../generated/types';
 
 export const posts: Blog.Post[] = [
     {

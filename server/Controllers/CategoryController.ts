@@ -1,8 +1,8 @@
 import { Express, Request, Response } from 'express';
-import { ICategoryController } from '../../generated/services/CategoryController';
+import { ICategoryController } from '../generated/CategoryController';
 
 import { tags } from '../data/tags';
-import { Category } from '../../generated/types';
+import { Category } from '../generated/types';
 
 export class CategoryController implements ICategoryController {
     get(request: Request, response: Response) {

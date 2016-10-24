@@ -66,7 +66,7 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, typ
     const serviceFunctionNames = Object.keys(service.rpc);
     const serviceName = service.name.replace('Service', 'Controller');
 
-    const serviceStream = fs.createWriteStream(`./generated/${SERVER_DIR}/${serviceName}.ts`, {
+    const serviceStream = fs.createWriteStream(`./server/generated/${serviceName}.ts`, {
         flags: 'w',
         encoding: 'utf8',
         autoClose: true
@@ -92,7 +92,7 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, typ
     // write imports
     serviceStream.write(`import { Express, Request, Response } from 'express';\n`);
     serviceStream.write(`import { Controller } from '../../server/lib/Controller';\n\n`);
-    serviceStream.write(`import { ${namespaceName} } from '../types';\n\n`);
+    serviceStream.write(`import { ${namespaceName} } from './types';\n\n`);
     Array.from(new Set(typeImports)).forEach(t => serviceStream.write(`import ${t} = ${namespaceName}.${t};\n`));
 
     // define interface
@@ -120,15 +120,11 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, typ
 
 export default function buildServer(json: any) {
     return new Promise((resolve, reject) => {
-        if (! fs.existsSync('./generated')) {
-            fs.mkdirSync('./generated');
+        if (! fs.existsSync('./server/generated')) {
+            fs.mkdirSync('./server/generated');
         }
 
-        if (! fs.existsSync('./generated/' + SERVER_DIR)) {
-            fs.mkdirSync('./generated/' + SERVER_DIR);
-        }
-
-        const routerStream = fs.createWriteStream(`./generated/${SERVER_DIR}/router.ts`, {
+        const routerStream = fs.createWriteStream(`./server/generated/router.ts`, {
             flags: 'w',
             encoding: 'utf8',
             autoClose: true

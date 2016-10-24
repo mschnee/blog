@@ -17,7 +17,9 @@ async function clean() {
   await del([
     '.tmp',
     'dist',
-    'generated'
+    'generated',
+    'server/generated/*',
+    'client/generated/*'
   ]);
   await fs.makeDir('dist');
   await fs.makeDir('dist/server');

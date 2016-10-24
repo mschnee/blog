@@ -35,13 +35,13 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, typ
     // service.name -- each rpc
     const serviceFunctionNames = Object.keys(service.rpc);
 
-    const serviceStream = fs.createWriteStream(`./generated/${CLIENT_DIR}/${service.name}.ts`, {
+    const serviceStream = fs.createWriteStream(`./client/generated/services/${service.name}.ts`, {
         flags: 'w',
         encoding: 'utf8',
         autoClose: true
     });
 
-    serviceStream.write(`import { ServiceClient } from '../../client/Utils/lib/ServiceClient';\n\n`);
+    serviceStream.write(`import { ServiceClient } from '../../Utils/lib/ServiceClient';\n\n`);
 
     const typeImports: string[] = [];
     const serviceMethods: string[] = [];
@@ -65,15 +65,15 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, typ
 
 export default function buildClient(json: any) {
     return new Promise((resolve, reject) => {
-        if (! fs.existsSync('./generated')) {
-            fs.mkdirSync('./generated');
+        if (! fs.existsSync('./client/generated')) {
+            fs.mkdirSync('./client/generated');
         }
 
-        if (! fs.existsSync('./generated/' + CLIENT_DIR)) {
-            fs.mkdirSync('./generated/' + CLIENT_DIR);
+        if (! fs.existsSync('./client/generated/services')) {
+            fs.mkdirSync('./client/generated/services');
         }
 
-        const clientStream = fs.createWriteStream('./generated/client.ts', {
+        const clientStream = fs.createWriteStream('./client/generated/client.ts', {
             flags: 'w',
             encoding: 'utf8',
             autoClose: true
@@ -83,7 +83,7 @@ export default function buildClient(json: any) {
         clientStream.addListener('error', reject);
 
         clientStream.write('//Automatically generated service.\n\n');
-        clientStream.write('import { Client } from \'../client/Utils/lib/Client\';\n');
+        clientStream.write('import { Client } from \'../Utils/lib/Client\';\n');
 
         const imports: string[] = [];
         const exports: string[] = [];
@@ -92,7 +92,7 @@ export default function buildClient(json: any) {
         JSON.parse(json).messages.forEach((ns: PbMessage) => {
             ns.services.forEach(service => {
                 const usefulServiceName = service.name.toLowerCase().replace('service', '');
-                imports.push(`import { ${service.name} } from './${CLIENT_DIR}/${service.name}';\n`);
+                imports.push(`import { ${service.name} } from './services/${service.name}';\n`);
                 exports.push(`    export const ${usefulServiceName} = new ${service.name}();\n`);
                 initLine.push(`    Services.${usefulServiceName}.setClient(client);\n`);
                 writeServiceClass(usefulServiceName, ns.name, ns.messages, service);

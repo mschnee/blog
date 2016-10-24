@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { IBlogController } from '../../generated/services/BlogController';
+import { IBlogController } from '../generated/BlogController';
 
-import { Blog } from '../../generated/types';
+import { Blog } from '../generated/types';
 
 import { posts } from '../data/blogPosts';
 import { tags } from '../data/tags';
