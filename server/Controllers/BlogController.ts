@@ -30,9 +30,28 @@ export class BlogController extends GeneratedBlogController implements IBlogCont
                 posts: []
             };
         }
+
+        const results = posts.filter(f => f.tags.indexOf(tag) >= 0);
+
+        if (!results || !results.length) {
+            response.status(404);
+            return {
+                posts: []
+            };
+        }
+
+        return {
+            posts: results
+        };
     }
 
     public getByTags(request: Request, response: Response, requestTags: string[]): Blog.MultiPostResponse {
+        if (!requestTags || !requestTags.length) {
+            response.status(404);
+            return {
+                posts: []
+            };
+        }
         const filters = requestTags.filter(t => tags.indexOf(t) >= 0);
         
         // none of the filters match?
