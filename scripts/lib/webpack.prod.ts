@@ -11,7 +11,7 @@ const webpackConfig: Configuration = {
     devtool: 'hidden-source-map',
     context: path.join(process.cwd(), 'client'),
     entry: {
-        app: './app.ts',
+        app: ['./app.ts'],
         vendor: ['react', 'react-dom', 'redux', 'immutable', 'react-router', 'protobufjs/dist/protobuf-light']
     },
     output: {
