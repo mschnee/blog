@@ -65,6 +65,10 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, typ
 
 export default function buildClient(json: any) {
     return new Promise((resolve, reject) => {
+        if (! fs.existsSync('./generated')) {
+            fs.mkdirSync('./generated');
+        }
+
         if (! fs.existsSync('./generated/' + CLIENT_DIR)) {
             fs.mkdirSync('./generated/' + CLIENT_DIR);
         }

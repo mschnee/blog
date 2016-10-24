@@ -20,6 +20,8 @@ async function clean() {
     'generated'
   ]);
   await fs.makeDir('dist');
+  await fs.makeDir('dist/server');
+  await fs.makeDir('dist/client');
   await fs.makeDir('generated');
 }
 

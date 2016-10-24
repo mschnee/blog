@@ -1,15 +1,11 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "outDir": "./dist/server/",
         "target": "es6",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "types": [
-            "node"
-        ],
-        "outDir": "./dist/server"
+        "noEmitOnError": true
     },
     "exclude": [
         "node_modules",

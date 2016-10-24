@@ -120,6 +120,10 @@ function writeServiceClass(usefulServiceName: string, namespaceName: string, typ
 
 export default function buildServer(json: any) {
     return new Promise((resolve, reject) => {
+        if (! fs.existsSync('./generated')) {
+            fs.mkdirSync('./generated');
+        }
+
         if (! fs.existsSync('./generated/' + SERVER_DIR)) {
             fs.mkdirSync('./generated/' + SERVER_DIR);
         }

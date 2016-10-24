@@ -4,7 +4,11 @@ import { PbField, PbMessage, PbServiceMethod, PbService, toTsDeclaration } from 
 
 export default function buildTypes(json: any) {
     return new Promise((resolve, reject)=>{
-        const writeStream = fs.createWriteStream('./generated/types.ts', { 
+        if (! fs.existsSync('./generated')) {
+            fs.mkdirSync('./generated');
+        }
+
+        const writeStream = fs.createWriteStream('./generated/types.ts', {
             flags: 'w',
             encoding: 'utf8',
             autoClose: true
