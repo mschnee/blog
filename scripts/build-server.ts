@@ -10,3 +10,13 @@ export default async function buildServer() {
         resolve(emitResult);
     });
 }
+
+export async function watchServer() {
+    return new Promise((resolve, reject) => {
+        const files = glob.sync('./server/**/*.ts');
+        tsconfig.watch = true;
+        let program = ts.createProgram(files, tsconfig);
+        let emitResult = program.emit();
+        resolve(emitResult);
+    });
+}
