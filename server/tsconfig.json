@@ -1,7 +1,14 @@
 {
     "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
         "target": "es6",
-        "types": ["node", "express"],
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "types": [
+            "node"
+        ],
         "outDir": "./dist/server"
     },
     "exclude": [

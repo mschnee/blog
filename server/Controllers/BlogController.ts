@@ -24,7 +24,8 @@ export class BlogController extends GeneratedBlogController implements IBlogCont
     }
 
     public getByTag(request: Request, response: Response, tag: string): Blog.MultiPostResponse { 
-        if (tags.indexOf(tag.toLowerCase()) < 0) {
+        tag = tag.toLowerCase();
+        if (tags.indexOf(tag) < 0) {
             response.status(404);
             return {
                 posts: []
@@ -52,7 +53,7 @@ export class BlogController extends GeneratedBlogController implements IBlogCont
                 posts: []
             };
         }
-        const filters = requestTags.filter(t => tags.indexOf(t) >= 0);
+        const filters = requestTags.filter(t => tags.indexOf(t) >= 0).map(String.prototype.toLowerCase);
         
         // none of the filters match?
         if (!filters || !filters.length) {

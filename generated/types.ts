@@ -1,23 +1,4 @@
 // Automatically generated.  Don't modify it!! Have fun!
-export namespace Category {
-    export interface Category {
-        categoryId: string;
-        name: string;
-    } // export interface Category
-
-    export interface CategoryResponse {
-        categories: Category[];
-    } // export interface CategoryResponse
-
-    export interface PostCategoryRequest {
-        name: string;
-    } // export interface PostCategoryRequest
-
-    export interface GetBlankRequest {
-    } // export interface GetBlankRequest
-
-} // namespace Category
-
 export namespace Blog {
     export interface Post {
         postId: string;
@@ -53,5 +34,24 @@ export namespace Blog {
     } // export interface GetByTagsRequest
 
 } // namespace Blog
+
+export namespace Category {
+    export interface Category {
+        categoryId: string;
+        name: string;
+    } // export interface Category
+
+    export interface CategoryResponse {
+        categories: Category[];
+    } // export interface CategoryResponse
+
+    export interface PostCategoryRequest {
+        name: string;
+    } // export interface PostCategoryRequest
+
+    export interface GetBlankRequest {
+    } // export interface GetBlankRequest
+
+} // namespace Category
 
 
