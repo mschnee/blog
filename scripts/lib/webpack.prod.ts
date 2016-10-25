@@ -6,6 +6,7 @@ import { Configuration } from 'webpack';
 //let CopyWebpackPlugin  = require('copy-webpack-plugin');
 let HtmlWebpackPlugin = require('html-webpack-plugin');
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
+let FaviconsWebpackPlugin= require('favicons-webpack-plugin');
 
 const webpackConfig: Configuration = {
     devtool: 'hidden-source-map',
@@ -27,6 +28,7 @@ const webpackConfig: Configuration = {
             template: path.join(process.cwd(), 'client', 'index.html'),
             inject: 'body'
         }),
+        new FaviconsWebpackPlugin('./client/images/2615.png'),
         new ExtractTextPlugin('assets/[name].[chunkhash].css')
     ],
     module: {

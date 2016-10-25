@@ -5,6 +5,7 @@ import { NoErrorsPlugin } from 'webpack';
 import webpackConfig from './webpack.prod';
 
 let HtmlWebpackPlugin = require('html-webpack-plugin');
+let FaviconsWebpackPlugin= require('favicons-webpack-plugin');
 
 webpackConfig.devtool = 'source-map';
 webpackConfig.output = {
@@ -21,8 +22,8 @@ webpackConfig.plugins = [
         template: path.join(process.cwd(), 'client', 'index.html'),
         inject: 'body'
     }),
+    //new FaviconsWebpackPlugin('./images/2615.png'), // this is pretty expensive since it's generating lots of data/markup
     new NoErrorsPlugin(),
-    new webpack.HotModuleReplacementPlugin,
 ];
 
 webpackConfig.entry = {

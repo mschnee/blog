@@ -1,9 +1,9 @@
 import * as webpack from 'webpack';
 import * as path from 'path';
 
-export function buildCompiler() {
+export function buildCompiler(watch?: boolean) {
     let configFile: string;
-    
+
     if (process.env.NODE_ENV === 'production') {
         console.log('Using Production configuration');
         configFile = 'webpack.prod.ts';
@@ -12,6 +12,12 @@ export function buildCompiler() {
         configFile = 'webpack.dev.ts';
     }
     const config = require(path.resolve(process.cwd(), 'scripts', 'lib', configFile)).default;
+    if (watch) {
+        config.devServer = {
+            inline: true
+        };
+        config.plugins.push(new webpack.HotModuleReplacementPlugin);
+    }
     const compiler = webpack(config);
 
     return compiler;
@@ -19,7 +25,7 @@ export function buildCompiler() {
 
 export async function buildWebpack() {
     return new Promise((resolve, reject) =>{
-        const compiler = buildCompiler();
+        const compiler = buildCompiler(false);
 
         compiler.run( (err, stats) => {
             if (err) {
@@ -27,7 +33,7 @@ export async function buildWebpack() {
                 reject(err);
             }
             const jsonStats = stats.toJson('minimal');
-            
+
             if (stats.hasErrors()) {
                 console.error("Webpack errors", jsonStats.errors);
                 reject(jsonStats.errors);
