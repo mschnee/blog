@@ -2,7 +2,6 @@
  * Generates all APIs
  */
 import * as glob from 'glob';
-import * as fs from 'fs';
 
 var toJson = require('../../node_modules/protobufjs/cli/pbjs/targets/json');
 

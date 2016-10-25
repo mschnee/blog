@@ -1,6 +1,3 @@
-import * as webpack from 'webpack';
-import * as path from 'path';
-
 import { buildCompiler } from './build-client';
 
 async function watchWebpack() {
@@ -15,7 +12,7 @@ async function watchWebpack() {
                 reject(err);
             }
             const jsonStats = stats.toJson('minimal');
-            
+
             if (stats.hasErrors()) {
                 reject(jsonStats.errors);
             }

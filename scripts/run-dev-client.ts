@@ -2,7 +2,7 @@
  * ensure everything is built, and then run the server
  */
 import * as WebpackDevServer from 'webpack-dev-server';
-import { buildCompiler, buildWebpack } from './build-client';
+import { buildCompiler } from './build-client';
 import generateAll from './generate-all';
 
 export default async function runDevClient(port: number = 8080, proxyPort: number = 8081) {
