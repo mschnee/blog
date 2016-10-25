@@ -2,11 +2,12 @@ import * as fs from 'fs';
 import * as minimist from 'minimist';
 import { Logger, transports } from 'winston';
 
-import { setLogger, logger } from './global';
+import { setLogger, logger, setConfig } from './global';
 import runServer from './run-server';
 import { ServerConfiguration } from './configuration/ServerConfiguration';
 
 const argv: ServerConfiguration = minimist(process.argv.slice(2));
+
 let defaultConfig: ServerConfiguration = {
     config: '/etc/conf.d/blog.json',
     hostname: 'localhost',
@@ -18,9 +19,8 @@ let config = Object.assign({}, defaultConfig, argv);
 
 if (process.env && process.env.NODE_ENV === 'production') {
     try {
-
         let loadedConfig = fs.readFileSync(config.config);
-        config = Object.assign({}, loadedConfig);
+        config = Object.assign({}, loadedConfig, config);
     } catch (e) {
         setLogger(new Logger({
             transports: [
@@ -43,4 +43,6 @@ if (process.env && process.env.NODE_ENV === 'production') {
     }));
 }
 
-runServer(8081);
+setConfig(config);
+
+runServer(config.port);

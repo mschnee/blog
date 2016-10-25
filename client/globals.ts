@@ -1,8 +1,8 @@
 import { RestClient } from './Utils/RestClient';
 
-import { Services, setClientForAllServices } from '../generated/client';
+import { Services, setClientForAllServices } from './generated/client';
 
-export let client: RestClient; 
+export let client: RestClient;
 export let services = Services;
 
 let initOnce = false;
