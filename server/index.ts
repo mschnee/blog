@@ -16,11 +16,36 @@ let defaultConfig: ServerConfiguration = {
 };
 
 let config = Object.assign({}, defaultConfig, argv);
-
+console.log(process.env.NODE_ENV);
 if (process.env && process.env.NODE_ENV === 'production') {
     try {
-        let loadedConfig = fs.readFileSync(config.config);
-        config = Object.assign({}, loadedConfig, config);
+        let loadedConfig = JSON.parse(fs.readFileSync(config.config, 'utf8'));
+        config = Object.assign({}, config, loadedConfig);
+
+        console.log('Starting with config', config);
+
+        // set production logging
+        setLogger(new Logger({
+            transports: [
+                new transports.Console(),
+                new transports.File({
+                    name: 'errors',
+                    filename: `${config.logDir}/error`,
+                    level: 'error'
+                }),
+                new transports.File({
+                    name: 'info',
+                    filename: `${config.logDir}/log`,
+                    level: 'info'
+                })
+            ],
+            exceptionHandlers: [
+                new transports.File({
+                    name: 'exceptions',
+                    filename: `${config.logDir}/exception`,
+                })
+            ]
+        }));
     } catch (e) {
         setLogger(new Logger({
             transports: [
@@ -30,12 +55,12 @@ if (process.env && process.env.NODE_ENV === 'production') {
                 new transports.Console()
             ]
         }));
-        logger.error('nope!', e);
+        logger.error('Error in startup', e);
     }
 } else {
     setLogger(new Logger({
         transports: [
-            new transports.Console()
+            new transports.Console(),
         ],
         exceptionHandlers: [
             new transports.Console()
@@ -45,4 +70,4 @@ if (process.env && process.env.NODE_ENV === 'production') {
 
 setConfig(config);
 
-runServer(config.port);
+runServer();
